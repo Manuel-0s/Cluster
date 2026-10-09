@@ -1,0 +1,30 @@
+<h1>PRODUCTOS</h1>
+<a href="producto.php?accion=create" class="btn btn-success">Agregar</a>
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Producto</th>
+        <th scope="col">Foto</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Marca</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($productos as $producto): ?>
+        <tr>
+        <th scope="row"><?php echo $producto['id']; ?></th>
+        <td><img src="../images/uploads/<?php echo $producto['foto']; ?>" width="100px"></td>
+        <th><?php echo $producto['producto']; ?></th>
+        <td><?php echo $producto['precio']; ?></td>
+        <td><?php echo $producto['marca']; ?></td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Opciones de la producto">
+                <a href="producto.php?accion=update&id=<?php echo $producto['id']; ?>" class="btn btn-primary">Editar</a>
+                <a href="producto.php?accion=delete&id=<?php echo $producto['id']; ?>" class="btn btn-danger">Eliminar</a>
+            </div>
+        </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

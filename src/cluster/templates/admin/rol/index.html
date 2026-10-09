@@ -1,0 +1,25 @@
+<h1>Roles</h1>
+<a href="rol.php?accion=create" class="btn btn-success">Agregar</a>
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Rol</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($roles as $rol): ?>
+            <tr>
+                <th scope="row"><?php echo $rol['id_rol']; ?></th>
+                <th scope="row"><?php echo $rol['rol']; ?></th>
+            <td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Opciones del usuario">
+                <a href="rol.php?accion=update&id=<?php echo $rol['id_rol']; ?>" class="btn btn-primary">Editar</a>
+                <a href="rol.php?accion=delete&id=<?php echo $rol['id_rol']; ?>" class="btn btn-danger">Eliminar</a>
+            </div>
+        </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>   

@@ -1,0 +1,27 @@
+<h1>PROVEEDORES</h1>
+<a href="proveedor.php?accion=create" class="btn btn-success">Agregar</a>
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Razon_social</th>
+        <th scope="col">RFC</th>
+        <th scope="col">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($proveedores as $proveedor): ?>
+        <tr>
+        <th scope="row"><?php echo $proveedor['id']; ?></th>
+        <td><?php echo $proveedor['razon_social']; ?></td>
+        <td><?php echo $proveedor['rfc']; ?></td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Opciones del proveedor">
+                <a href="proveedor.php?accion=update&id=<?php echo $proveedor['id']; ?>" class="btn btn-primary">Editar</a>
+                <a href="proveedor.php?accion=delete&id=<?php echo $proveedor['id']; ?>" class="btn btn-danger">Eliminar</a>
+            </div>
+        </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

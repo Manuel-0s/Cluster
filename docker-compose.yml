@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./src/wp-content:/var/www/html/wp-content
+    depends_on:
+      - postgres
+      - mariadb
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: md5
+    ports:
+      - "65432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/
+    command: -c listen_addresses='*' -c log_statement=all
+
+  mariadb:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "63306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init-mariadb.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --bind-address=0.0.0.0
+
+volumes:
+  postgres_data:
+  mariadb_data:

@@ -1,0 +1,28 @@
+<h1>Marcas</h1>
+<a href="marca.php?accion=create" class="btn btn-success">Agregar</a>
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Logo</th>
+        <th scope="col">Marca</th>
+        <th scope="col">Proveedor</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($marcas as $marca): ?>
+        <tr>
+        <th scope="row"><?php echo $marca['id']; ?></th>
+        <td><img src="../images/uploads/<?php echo $marca['logo']; ?>" width="100px" height="auto"></td>
+        <th><?php echo $marca['marca']; ?></th>
+        <td><?php echo $marca['razon_social']; ?></td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Opciones de la marca">
+                <a href="marca.php?accion=update&id=<?php echo $marca['id']; ?>" class="btn btn-primary">Editar</a>
+                <a href="marca.php?accion=delete&id=<?php echo $marca['id']; ?>" class="btn btn-danger">Eliminar</a>
+            </div>
+        </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
