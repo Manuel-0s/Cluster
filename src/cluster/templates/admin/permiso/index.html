@@ -1,0 +1,25 @@
+<h1>Permisos</h1>
+<a href="permiso.php?accion=create" class="btn btn-success">Agregar</a>
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Permiso</th>
+        <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($permisos as $permiso): ?>
+        <tr>
+        <th scope="row"><?php echo $permiso['id_permiso']; ?></th>
+        <td><?php echo $permiso['permiso']; ?></td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Opciones de la permiso">
+                <a href="permiso.php?accion=update&id=<?php echo $permiso['id_permiso']; ?>" class="btn btn-primary">Editar</a>
+                <a href="permiso.php?accion=delete&id=<?php echo $permiso['id_permiso']; ?>" class="btn btn-danger">Eliminar</a>
+            </div>
+        </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
