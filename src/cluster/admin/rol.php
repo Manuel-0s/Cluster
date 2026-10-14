@@ -2,6 +2,7 @@
     include_once __DIR__ . '/models/rol/rol.class.php';
 
     $app = new Rol();
+    $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
 

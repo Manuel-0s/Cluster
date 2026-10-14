@@ -4,6 +4,7 @@
 
     $app = new Usuario();
     $rolApp = new Rol();
+    $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
 
@@ -25,6 +26,13 @@
         case 'update':
             if (isset($_POST['enviar'])) {
                 $data = $_POST['data'];
+
+                if (!empty($data['contrasena'])) {
+                    $data['contrasena'] = md5($data['contrasena']);
+                } else {
+                    unset($data['contrasena']);
+                }
+
                 $id = $_POST['id'] ?? $_GET['id'] ?? null;
                 $datos = $app->update($id, $data);
                 $usuarios = $app->getAll();

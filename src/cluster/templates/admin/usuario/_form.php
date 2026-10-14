@@ -11,7 +11,7 @@
 
     <div class="mb-3">
         <label class="form-label">Contraseña</label>
-        <input type="password" name="data[contrasena]" value="<?php echo $datos['contrasena'] ?? ''; ?>" class="form-control" id="contrasena">
+        <input type="password" name="data[contrasena]" class="form-control" id="contrasena">
     </div>
 
     <?php if (($accion ?? '') === 'update'): ?>

@@ -4,6 +4,7 @@
 
     $appMarca = new Marca();
     $app = new Producto();
+    $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
 

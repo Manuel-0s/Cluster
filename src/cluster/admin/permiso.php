@@ -1,12 +1,15 @@
 <?php
-    include_once __DIR__ . '/models/permisos/permiso.class.php';
+    include_once __DIR__ . '/models/permiso/permiso.class.php';
 
     $app = new Permiso();
+    $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
+    $app -> checarRol("Administrador");
+
 
     include_once __DIR__ . '/../templates/admin/header.html';
-    
+
     switch ($accion) {
         case 'create':
             if (isset($_POST['enviar'])) {

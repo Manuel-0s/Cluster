@@ -2,6 +2,7 @@
     include_once __DIR__ . '/models/proveedor/proveedor.class.php';
 
     $app = new Proveedor();
+    $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
 
