@@ -121,7 +121,6 @@
                 'mensaje' => 'No tienes permiso para acceder a esta sección, vuelvete a logear',
                 'tipo' => 'danger'
             ];
-            require_once __DIR__ . '/../templates/admin/alert.html';
             $this -> logout();
             require_once __DIR__ . '/../templates/login/login.html';
             return exit();            

@@ -11,6 +11,10 @@ body {
     box-shadow: 0 1rem 3rem rgba(74, 176, 219, .15);
 }
 
+.login-alert {
+    max-width: 430px;
+}
+
 .form-control {
     padding: .8rem 1rem;
     border: 1px solid #b9e4f3;

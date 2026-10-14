@@ -7,8 +7,7 @@
 
     <div class="mb-3">
         <label class="form-label">Permiso</label>
-        <input type="text" name="data[permiso]" value="<?php echo $datos['permiso'] ?? ''; ?>" class="form-control" id="permiso" required>
+        <input type="text" name="data[permiso]" value="<?php echo $datos['permiso'] ?? ''; ?>" class="form-contpermiso" id="permiso" required>
     </div>
-    
     <input type="submit" name="enviar" class="btn btn-success" value="Guardar">
 </form>

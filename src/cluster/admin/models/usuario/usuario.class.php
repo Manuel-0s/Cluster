@@ -30,6 +30,7 @@ class Usuario extends Sistema {
                 $rolesStmt = $this->db->prepare(
                     "SELECT id_rol FROM usuario_rol WHERE id_usuario = :id_usuario"
                 );
+                
                 $rolesStmt->bindParam(':id_usuario', $id, PDO::PARAM_INT);
                 $rolesStmt->execute();
                 $datos['roles'] = array_map(

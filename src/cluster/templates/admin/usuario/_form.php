@@ -18,7 +18,7 @@
         <div class="mb-3">
             <label class="form-label d-block">Selecciona los roles</label>
 
-            <div class="btn-group" role="group" aria-label="Roles del usuario">
+            <div class="d-grid gap-2 d-md-block" aria-label="Roles del usuario">
                 <?php foreach ($roles as $rol): ?>
                     <?php $rolId = (int) $rol['id_rol']; ?>
                     <input

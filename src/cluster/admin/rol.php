@@ -25,7 +25,7 @@
                 $data = $_POST['data'];
                 $id = $_POST['id'] ?? $_GET['id'] ?? null;
                 $datos = $app->update($id, $data);
-                $roles = $app->getAll();
+                $roles = $app->getAll();    
                 include_once __DIR__ . '/../templates/admin/rol/index.html';
             } else {
                 $datos = $app->getOne($id);
