@@ -11,7 +11,7 @@
                 $contrasena = $_POST['contrasena'] ?? '';
 
                 if ($app -> login($correo, $contrasena)){
-                    header('Location: index.php');
+                    header('Location: usuario.php');
                     exit();
                 }
             } 
@@ -30,7 +30,6 @@
                 'tipo' => 'success'
             ];
             require_once __DIR__ . '/../templates/login/login.html';
-
             exit();
             break;
 

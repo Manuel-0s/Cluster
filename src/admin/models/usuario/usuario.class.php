@@ -4,6 +4,8 @@ require_once __DIR__ . '/../sistema.class.php';
 class Usuario extends Sistema {
 
     function create($data) {
+        $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
+
         $datos = [];
         $sql = "INSERT INTO usuario (correo, contrasena)
                 VALUES (:correo, :contrasena)";
@@ -55,6 +57,12 @@ class Usuario extends Sistema {
         $roles = $data['id_rol'] ?? [];
         $roles = is_array($roles) ? array_unique($roles) : [];
         $roles = array_values(array_filter($roles, 'is_numeric'));
+
+        if (!empty($data['contrasena'])) {
+            $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
+        } else {
+            $data['contrasena'] = $this -> getOne($id)['contrasena'];
+        }
 
         if (is_numeric($id) && !empty($data) && !empty($roles)) {
             $sql = "UPDATE usuario

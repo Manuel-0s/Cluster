@@ -47,19 +47,19 @@
             return null;
         }
 
-        function login ($correo, $contrasena){
-            if( filter_var($correo, FILTER_VALIDATE_EMAIL)){
-                $contrasena = md5($contrasena);
-                $sql = "SELECT * FROM usuario
-                    WHERE correo = :correo 
-                    AND contrasena = :contrasena";
+        function login($correo, $contrasena) {
+            if (filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+
+                $sql = "SELECT * FROM usuario WHERE correo = :correo";
                 $stmt = $this->db->prepare($sql);
-                $stmt->bindParam(':correo', $correo);
-                $stmt->bindParam(':contrasena', $contrasena);
+                $stmt->bindParam(':correo', $correo, PDO::PARAM_STR);
                 $stmt->execute();
                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if($usuario){
+                if ($usuario && password_verify($contrasena, $usuario['contrasena'])) {
+                    session_regenerate_id(true);
+                    unset($usuario['contrasena']);
+
                     $_SESSION['usuario'] = $usuario;
                     $_SESSION['id_usuario'] = $usuario['id_usuario'];
                     $_SESSION['valido'] = true;
@@ -68,7 +68,7 @@
                     return true;
                 }
             }
-            $this -> logout();
+            $this->logout();
             return false;
         }
 

@@ -14,7 +14,6 @@
         case 'create':
             if (isset($_POST['enviar'])) {
                 $data = $_POST['data'];
-                $data['contrasena'] = md5($data['contrasena']);
                 $datos = $app->create($data);
                 $usuarios = $app->getAll();
                 include_once __DIR__ . '/../templates/admin/usuario/index.html';
@@ -26,13 +25,6 @@
         case 'update':
             if (isset($_POST['enviar'])) {
                 $data = $_POST['data'];
-
-                if (!empty($data['contrasena'])) {
-                    $data['contrasena'] = md5($data['contrasena']);
-                } else {
-                    unset($data['contrasena']);
-                }
-
                 $id = $_POST['id'] ?? $_GET['id'] ?? null;
                 $datos = $app->update($id, $data);
                 $usuarios = $app->getAll();

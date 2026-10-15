@@ -1,0 +1,29 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+vendor/
+node_modules/
+
+# Docker and local database data
+docker-compose.override.yml
+mariadb_data/
+src/wp-content/
+
+# Runtime-generated uploads and logs
+src/images/uploads/*
+!src/images/uploads/.gitkeep
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
