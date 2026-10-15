@@ -65,6 +65,7 @@
                     $_SESSION['valido'] = true;
                     $_SESSION['roles'] = $this->getRoles($usuario['correo']);
                     $_SESSION['permisos'] = $this->getPermisos($usuario['correo']);
+
                     return true;
                 }
             }

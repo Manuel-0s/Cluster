@@ -11,7 +11,7 @@
                 $contrasena = $_POST['contrasena'] ?? '';
 
                 if ($app -> login($correo, $contrasena)){
-                    header('Location: usuario.php');
+                    header('Location: index.php');
                     exit();
                 }
             } 

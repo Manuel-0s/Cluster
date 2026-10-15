@@ -7,7 +7,7 @@ class Usuario extends Sistema {
 
     function __construct() {
         parent::__construct();
-        $this->usuarioRol = new UsuarioRol();
+        $this->usuarioRol = new UsuarioRol($this->db);
     }
 
     function create($data) {
@@ -77,21 +77,8 @@ class Usuario extends Sistema {
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
 
-                $deleteRole = $this->db->prepare(
-                    "DELETE FROM usuario_rol WHERE id_usuario = :id_usuario"
-                );
-                $deleteRole->bindParam(':id_usuario', $id, PDO::PARAM_INT);
-                $deleteRole->execute();
 
-                $insertRole = $this->db->prepare(
-                    "INSERT INTO usuario_rol (id_usuario, id_rol)
-                     VALUES (:id_usuario, :id_rol)"
-                );
-                $insertRole->bindParam(':id_usuario', $id, PDO::PARAM_INT);
-                foreach ($roles as $roleId) {
-                    $insertRole->bindValue(':id_rol', (int) $roleId, PDO::PARAM_INT);
-                    $insertRole->execute();
-                }
+                $this->usuarioRol->syncRoles($id, $roles);
 
                 $this->db->commit();
                 $afectados = $stmt->rowCount();

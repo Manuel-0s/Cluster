@@ -1,7 +1,9 @@
 <?php
     include_once __DIR__ . '/models/rol/rol.class.php';
+    include_once __DIR__ . '/models/permiso/permiso.class.php';
 
     $app = new Rol();
+    $permisoApp = new Permiso();
     $app -> checarRol("Administrador");
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
@@ -29,6 +31,7 @@
                 include_once __DIR__ . '/../templates/admin/rol/index.html';
             } else {
                 $datos = $app->getOne($id);
+                $permisos = $permisoApp->getAll();
                 include_once __DIR__ . '/../templates/admin/rol/_form.php';
             }
             break;

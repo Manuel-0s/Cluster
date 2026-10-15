@@ -1,7 +1,14 @@
 <?php
 require_once __DIR__ . '/../sistema.class.php';
+require_once __DIR__ . '/rol_permiso.class.php';
 
 class Rol extends Sistema {
+    private $rolPermiso;
+
+    function __construct() {
+        parent::__construct();
+        $this->rolPermiso = new RolPermiso($this->db);
+    }
 
     function create($data) {
         $datos = [];
@@ -24,6 +31,10 @@ class Rol extends Sistema {
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($datos) {
+                $datos['permisos'] = $this->rolPermiso->getPermisosByRol($id);
+            }
         }
         return $datos;
     }
@@ -42,11 +53,22 @@ class Rol extends Sistema {
             $sql = "UPDATE rol
                     SET rol = :rol
                     WHERE id_rol = :id";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':rol', $data['rol'], PDO::PARAM_STR);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
 
+            $this -> db -> beginTransaction();
+
+            try {
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':rol', $data['rol'], PDO::PARAM_STR);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $this->rolPermiso->syncPermisos($id, $data['id_permiso'] ?? []);
+
+                $this -> db -> commit();
+            } catch (Exception $e) {
+                $this -> db -> rollBack();
+                throw $e;
+            }
             $afectados = $stmt->rowCount();
         }
 

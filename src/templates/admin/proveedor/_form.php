@@ -4,7 +4,7 @@
     <div class="mb-3">
         <label class="form-label">Razón Social</label>
         <input type="text" name="data[razon_social]" value="<?php echo $datos['razon_social'] ?? ''; ?>" class="form-control" id="razon_social" required
-        pattern="[A-Z]{100}">
+        pattern = "[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s]{1,100}">
     </div>
 
     <div class="mb-3">

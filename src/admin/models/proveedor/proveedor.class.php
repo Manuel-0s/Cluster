@@ -68,5 +68,16 @@ class Proveedor extends Sistema {
         }
         return $afectados;
     }
+
+    function getProvedoresProductos() {
+        $sql = "SELECT pv.razon_social, COUNT(*) as cantidad
+            FROM proveedor pv
+                JOIN marca m ON pv.id = m.id_proveedor
+                JOIN producto p on m.id = p.id_marca
+            GROUP BY pv.razon_social";
+        $stmt = $this->db->query($sql);
+        $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $datos;
+    }
 }
 ?>
