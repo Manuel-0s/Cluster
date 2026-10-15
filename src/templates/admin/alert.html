@@ -1,5 +1,6 @@
 <?php if (isset($alerta['mensaje']) && isset($alerta['tipo'])): ?>
-    <div class="alert alert-<?= $alerta['tipo']; ?> login-alert mx-auto" role="alert">
+    <div class="alert alert-<?= $alerta['tipo']; ?> alert-dismissible fade show" role="alert">
         <?= $alerta['mensaje']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>

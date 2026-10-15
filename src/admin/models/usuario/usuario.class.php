@@ -1,7 +1,14 @@
 <?php
 require_once __DIR__ . '/../sistema.class.php';
+include_once __DIR__ . '/usuario_rol.class.php';
 
 class Usuario extends Sistema {
+    private $usuarioRol;
+
+    function __construct() {
+        parent::__construct();
+        $this->usuarioRol = new UsuarioRol();
+    }
 
     function create($data) {
         $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
@@ -29,16 +36,7 @@ class Usuario extends Sistema {
             $datos = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($datos) {
-                $rolesStmt = $this->db->prepare(
-                    "SELECT id_rol FROM usuario_rol WHERE id_usuario = :id_usuario"
-                );
-                
-                $rolesStmt->bindParam(':id_usuario', $id, PDO::PARAM_INT);
-                $rolesStmt->execute();
-                $datos['roles'] = array_map(
-                    'intval',
-                    $rolesStmt->fetchAll(PDO::FETCH_COLUMN)
-                );
+                $datos['roles'] = $this->usuarioRol->getRolesByUsuario($id);
             }
         }
         return $datos;
@@ -71,6 +69,7 @@ class Usuario extends Sistema {
                     WHERE id_usuario = :id";
 
             $this->db->beginTransaction();
+
             try {
                 $stmt = $this->db->prepare($sql);
                 $stmt->bindParam(':correo', $data['correo'], PDO::PARAM_STR);
@@ -81,7 +80,6 @@ class Usuario extends Sistema {
                 $deleteRole = $this->db->prepare(
                     "DELETE FROM usuario_rol WHERE id_usuario = :id_usuario"
                 );
-                
                 $deleteRole->bindParam(':id_usuario', $id, PDO::PARAM_INT);
                 $deleteRole->execute();
 
@@ -102,7 +100,6 @@ class Usuario extends Sistema {
                 throw $exception;
             }
         }
-
         return $afectados;
     }
 

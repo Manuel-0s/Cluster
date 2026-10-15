@@ -7,7 +7,6 @@ services:
       - "8081:80"
     volumes:
       - ./src:/var/www/html
-      - ./src/wp-content:/var/www/html/wp-content
     depends_on:
       - mariadb
 
