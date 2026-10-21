@@ -5,15 +5,15 @@
 
 # Dependencies
 node_modules/
+/src/vendor/
 
 # Docker and local database data
 docker-compose.override.yml
 mariadb_data/
-src/wp-content/
 
 # Runtime-generated uploads and logs
 src/images/uploads/**
-!src/images/uploads/**/
+!src/images/uploads/**/ 
 !src/images/uploads/**/.gitkeep
 *.log
 

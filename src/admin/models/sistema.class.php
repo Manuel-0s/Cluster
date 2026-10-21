@@ -1,4 +1,6 @@
 <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
     require_once __DIR__.'/config.php';
     
     class Sistema {
@@ -125,6 +127,38 @@
             $this -> logout();
             require_once __DIR__ . '/../templates/login/login.html';
             return exit();            
+        }
+
+        function enviarCorreo($destinatarios, $asunto, $contenido, $adjunto = null){
+            require_once __DIR__ . "/../../vendor/autoload.php";
+
+            $mail = new PHPMailer();
+
+            $mail->isSMTP();
+
+            $mail->SMTPDebug = SMTP::DEBUG_OFF;
+            $mail->Host = $_ENV['SMTP_HOST'];
+            $mail->Port = $_ENV['SMTP_PORT'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->SMTPAuth = true;
+
+            $mail->Username = $_ENV['SMTP_EMAIL'];
+            $mail->Password = $_ENV['SMTP_PASSWORD'];
+
+            foreach ($destinatarios as $destinatario) {
+                $mail->addAddress($destinatario);
+            }
+
+            $mail->setFrom($_ENV['SMTP_EMAIL'], 'Empresa Manuel');
+            $mail->Subject = $asunto;
+            $content = $contenido;
+            $mail->msgHTML($content);
+
+            if (!$mail->send()) {
+                return FALSE;
+            } else {
+                return TRUE;
+            }
         }
     }
 ?>

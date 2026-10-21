@@ -11,6 +11,7 @@ class Usuario extends Sistema {
     }
 
     function create($data) {
+        $contrasena = $data['contrasena'] ?? '';
         $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
 
         $datos = [];
@@ -20,6 +21,29 @@ class Usuario extends Sistema {
         $stmt->bindParam(':correo', $data['correo'], PDO::PARAM_STR);
         $stmt->bindParam(':contrasena', $data['contrasena'], PDO::PARAM_STR);
         $stmt->execute();
+
+        $contenido = "
+            <h2>¡Bienvenido a la plataforma Cluster Automotriz!</h2>
+            <p>Su cuenta ha sido creada correctamente. A continuación encontrará sus accesos:</p>
+            <ul>
+                <li><strong>Correo:</strong> " . $data['correo'] . "</li>
+                <li><strong>Contraseña:</strong> " . $contrasena . "</li>
+            </ul>
+            <p><em>Por seguridad, le recomendamos cambiar su contraseña después de iniciar sesión.</em></p>
+        ";
+
+        $correo = $this -> enviarCorreo(
+            [$data['correo']],
+            'Bienvenido a la plataforma Cluster Automotriz',
+            $contenido
+        );
+
+        if($correo){
+            return true;
+        }else{
+            return false;
+        }
+
         $datos = $data;
         $datos['afectados'] = $stmt->rowCount();
         $datos['id'] = $this->db->lastInsertId();

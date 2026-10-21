@@ -32,7 +32,20 @@
             require_once __DIR__ . '/../templates/login/login.html';
             exit();
             break;
+        case 'recuperar':
+            include_once __DIR__ . '/../templates/login/_form_email.html';
+            break;
 
+        case 'enviar_correo':
+            if (isset($_POST['enviar'])) {
+                $correo = $_POST['correo'] ?? '';
+                if (filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                    $token = bin2hex(random_bytes(16));
+                    $token = md5(md5($token).time()) . md5("Cruz Azul Campeaon Forever" . $correo);
+                }
+            }
+            break;
+                
         case 'login':
             default:
             require_once __DIR__ . '/../templates/login/login.html';
