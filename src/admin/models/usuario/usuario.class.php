@@ -125,5 +125,38 @@ class Usuario extends Sistema {
         }
         return $afectados;
     }
+
+    function guardarToken($correo, $token) {
+        if (filter_var($correo, FILTER_VALIDATE_EMAIL) && strlen($token) == 64) {
+            $sql = "UPDATE usuario SET token = :token WHERE correo = :correo";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->bindParam(':correo', $correo, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        return false;
+    }
+
+    function validarToken($token) {
+        if (strlen($token) == 64) {
+            $sql = "SELECT * FROM usuario WHERE token = :token";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }
+        return false;
+    }
+
+    function actualizarContrasena($token, $contrasena) {
+        $contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
+        $sql = "UPDATE usuario SET contrasena = :contrasena, token = NULL WHERE token = :token";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':contrasena', $contrasena, PDO::PARAM_STR);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
 }
 ?>
