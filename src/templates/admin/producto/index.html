@@ -1,30 +1,40 @@
-<h1>PRODUCTOS</h1>
-<a href="producto.php?accion=create" class="btn btn-success">Agregar</a>
-<table class="table">
-    <thead>
-        <tr>
-        <th scope="col">#</th>
-        <th scope="col">Producto</th>
-        <th scope="col">Foto</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Marca</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($productos as $producto): ?>
-        <tr>
-        <th scope="row"><?php echo $producto['id']; ?></th>
-        <td><img src="../images/uploads/<?php echo $producto['foto']; ?>" width="100px"></td>
-        <th><?php echo $producto['producto']; ?></th>
-        <td><?php echo $producto['precio']; ?></td>
-        <td><?php echo $producto['marca']; ?></td>
-        <td>
-            <div class="btn-group" role="group" aria-label="Opciones de la producto">
-                <a href="producto.php?accion=update&id=<?php echo $producto['id']; ?>" class="btn btn-primary">Editar</a>
-                <a href="producto.php?accion=delete&id=<?php echo $producto['id']; ?>" class="btn btn-danger">Eliminar</a>
-            </div>
-        </td>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Productos</h1>
+        <a href="producto.php?accion=create" class="btn btn-success">Agregar</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Foto</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($productos as $producto): ?>
+                    <tr>
+                        <th scope="row"><?php echo $producto['id']; ?></th>
+                        <td><img src="../images/uploads/<?php echo $producto['foto']; ?>" width="100px"></td>
+                        <td><?php echo $producto['producto']; ?></td>
+                        <td><?php echo $producto['precio']; ?></td>
+                        <td><?php echo $producto['marca']; ?></td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Opciones del producto">
+                                <a href="producto.php?accion=update&id=<?php echo $producto['id']; ?>" class="btn btn-outline-primary">Editar</a>
+                                <a href="producto.php?accion=delete&id=<?php echo $producto['id']; ?>" class="btn btn-outline-danger">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,10 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3 mb-0">Empleado</h1>
-        <a href="empleado.php?accion=create" class="btn btn-success">Agregar</a>
+        <div class="d-flex gap-2">
+            <a href="empleado.php?accion=generar_pdf" class="btn btn-outline-danger">Generar PDF</a>
+            <a href="empleado.php?accion=create" class="btn btn-success">Agregar</a>
+        </div>
     </div>
 
     <div class="card shadow-sm">
@@ -10,6 +13,7 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Foto</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Correo</th>
                         <th scope="col">RFC</th>
@@ -20,12 +24,33 @@
                     <?php foreach ($empleados as $empleado): ?>
                     <tr>
                         <th scope="row"><?php echo $empleado['id_empleado']; ?></th>
+                        <td>
+                            <?php if (!empty($empleado['foto'])): ?>
+                                <img src="../images/uploads/<?php echo htmlspecialchars($empleado['foto'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    alt="Foto de <?php echo htmlspecialchars($empleado['nombre'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    width="60" height="60" class="rounded-circle object-fit-cover"
+                                    role="button" data-bs-toggle="modal" data-bs-target="#modal-foto-empleado"
+                                    data-foto="../images/uploads/<?php echo htmlspecialchars($empleado['foto'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-nombre="<?php echo htmlspecialchars($empleado['nombre'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    style="cursor: pointer;" title="Ampliar foto">
+                            <?php else: ?>
+                                <span class="text-body-secondary">Sin foto</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?php echo $empleado['nombre'] . ' ' . $empleado['primer_apellido'] . ' ' . $empleado['segundo_apellido'] ?? ''; ;  ?></td>
                         <td><?php echo $empleado['correo']; ?></td>
                         <td><?php echo $empleado['rfc']; ?></td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Opciones de la empleado">
                                 <a href="empleado.php?accion=update&id=<?php echo $empleado['id_empleado']; ?>" class="btn btn-outline-primary">Editar</a>
+                                <button type="button" class="btn btn-outline-success btn-credencial"
+                                    data-id="<?php echo (int) $empleado['id_empleado']; ?>"
+                                    data-nombre="<?php echo htmlspecialchars(trim($empleado['nombre'] . ' ' . $empleado['primer_apellido'] . ' ' . ($empleado['segundo_apellido'] ?? '')), ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-correo="<?php echo htmlspecialchars($empleado['correo'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-rfc="<?php echo htmlspecialchars($empleado['rfc'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-foto="<?php echo empty($empleado['foto']) ? '' : '../images/uploads/' . htmlspecialchars($empleado['foto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    Credencial
+                                </button>
                                 <a href="empleado.php?accion=delete&id=<?php echo $empleado['id_empleado']; ?>" class="btn btn-outline-danger">Eliminar</a>
                             </div>
                         </td>
@@ -35,4 +60,150 @@
             </table>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-foto-empleado" tabindex="-1" aria-labelledby="modal-foto-empleado-titulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="modal-foto-empleado-titulo">Fotografía del empleado</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="foto-empleado-ampliada" src="" alt="" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const modalFotoEmpleado = document.getElementById('modal-foto-empleado');
+        modalFotoEmpleado.addEventListener('show.bs.modal', (event) => {
+            const imagen = event.relatedTarget;
+            const fotoAmpliada = document.getElementById('foto-empleado-ampliada');
+            const titulo = document.getElementById('modal-foto-empleado-titulo');
+            const nombre = imagen.getAttribute('data-nombre');
+
+            fotoAmpliada.src = imagen.getAttribute('data-foto');
+            fotoAmpliada.alt = `Foto de ${nombre}`;
+            titulo.textContent = `Fotografía de ${nombre}`;
+        });
+
+        modalFotoEmpleado.addEventListener('hidden.bs.modal', () => {
+            document.getElementById('foto-empleado-ampliada').src = '';
+        });
+
+        const cargarImagenComoDataUrl = async (ruta) => {
+            const respuesta = await fetch(ruta);
+            if (!respuesta.ok) {
+                throw new Error('No se pudo cargar la fotografía.');
+            }
+
+            const blob = await respuesta.blob();
+            return new Promise((resolve, reject) => {
+                const lector = new FileReader();
+                lector.onloadend = () => resolve(lector.result);
+                lector.onerror = reject;
+                lector.readAsDataURL(blob);
+            });
+        };
+
+        document.querySelectorAll('.btn-credencial').forEach((boton) => {
+            boton.addEventListener('click', async () => {
+                const ventana = window.open('', '_blank');
+                if (!ventana) {
+                    alert('Permite las ventanas emergentes para generar la credencial.');
+                    return;
+                }
+
+                ventana.document.write('<p style="font-family: sans-serif; padding: 2rem;">Generando credencial...</p>');
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [85.6, 54] });
+                    const datos = boton.dataset;
+                    const verde = [25, 135, 84];
+                    const verdeOscuro = [19, 92, 61];
+                    const gris = [90, 99, 105];
+                    const blanco = [255, 255, 255];
+
+                    pdf.setFillColor(248, 250, 249);
+                    pdf.rect(0, 0, 85.6, 54, 'F');
+                    pdf.setFillColor(...verde);
+                    pdf.rect(0, 0, 85.6, 14, 'F');
+                    pdf.setFillColor(...verdeOscuro);
+                    pdf.rect(0, 48, 85.6, 6, 'F');
+
+                    pdf.setDrawColor(...verdeOscuro);
+                    pdf.setLineWidth(0.7);
+                    pdf.roundedRect(2.5, 2.5, 80.6, 49, 2.5, 2.5);
+
+                    pdf.setTextColor(...blanco);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(11);
+                    pdf.text('CLUSTER', 7, 7.5);
+                    pdf.setFontSize(6);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.text('IDENTIFICACIÓN OFICIAL', 7, 11);
+
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(7);
+                    pdf.text('CREDENCIAL DE EMPLEADO', 78.5, 8.5, { align: 'right' });
+
+                    const fotoX = 7;
+                    const fotoY = 19;
+                    const fotoAncho = 22;
+                    const fotoAlto = 25;
+                    pdf.setFillColor(225, 233, 228);
+                    pdf.roundedRect(fotoX, fotoY, fotoAncho, fotoAlto, 1.5, 1.5, 'F');
+
+                    if (datos.foto) {
+                        const foto = await cargarImagenComoDataUrl(datos.foto);
+                        const formatoFoto = foto.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+                        pdf.addImage(foto, formatoFoto, fotoX, fotoY, fotoAncho, fotoAlto);
+                    } else {
+                        pdf.setTextColor(...gris);
+                        pdf.setFont('helvetica', 'normal');
+                        pdf.setFontSize(6);
+                        pdf.text('SIN FOTO', fotoX + fotoAncho / 2, fotoY + 13, { align: 'center' });
+                    }
+
+                    pdf.setTextColor(...verdeOscuro);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(9);
+                    const nombre = pdf.splitTextToSize(datos.nombre, 47);
+                    pdf.text(nombre, 34, 20, { lineHeightFactor: 1.15 });
+
+                    const inicioDatos = 20 + (nombre.length * 4.2) + 3;
+                    pdf.setTextColor(...gris);
+                    pdf.setFontSize(5.5);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.text('ID DE EMPLEADO', 34, inicioDatos);
+                    pdf.text('RFC', 58, inicioDatos);
+                    pdf.setTextColor(35, 40, 42);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(7);
+                    pdf.text(datos.id, 34, inicioDatos + 4);
+                    pdf.text(datos.rfc, 58, inicioDatos + 4);
+
+                    pdf.setTextColor(...gris);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(5.5);
+                    pdf.text('CORREO ELECTRÓNICO', 34, 39.5);
+                    pdf.setTextColor(35, 40, 42);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(6.5);
+                    pdf.text(datos.correo, 34, 43.5, { maxWidth: 44 });
+
+                    pdf.setTextColor(...blanco);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(5.5);
+                    pdf.text('Documento de identificación de uso interno', 7, 51.8);
+                    ventana.location.href = pdf.output('bloburl');
+                } catch (error) {
+                    ventana.document.body.innerHTML = '<p style="font-family: sans-serif; padding: 2rem; color: #b02a37;">No fue posible generar la credencial.</p>';
+                }
+            });
+        });
+    </script>
 </div>

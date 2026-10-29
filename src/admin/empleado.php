@@ -6,10 +6,12 @@
     $accion = $_GET['accion'] ?? 'read';
     $id = $_GET['id'] ?? null;
 
-    include_once __DIR__ . '/../templates/admin/header.html';
-    
     switch ($accion) {
+        case 'generar_pdf':
+            $app->generarListadoPdf();
+            break;
         case 'create':
+            include_once __DIR__ . '/../templates/admin/header.html';
             if (isset($_POST['enviar'])) {
                 $data = $_POST['data'];
                 $datos = $app->create($data);
@@ -21,6 +23,7 @@
             }
             break;
         case 'update':
+            include_once __DIR__ . '/../templates/admin/header.html';
             if (isset($_POST['enviar'])) {
                 $data = $_POST['data'];
                 $id = $_POST['id'] ?? $_GET['id'] ?? null;
@@ -33,12 +36,14 @@
             }
             break;
         case 'delete':
+            include_once __DIR__ . '/../templates/admin/header.html';
             $afectados = $app->delete($id);
             $empleados = $app->getAll();
             include_once __DIR__ . '/../templates/empleado/index.html';
             break;
         case 'read':
         default:
+            include_once __DIR__ . '/../templates/admin/header.html';
             $empleados = $app->getAll();
             include_once __DIR__ . '/../templates/empleado/index.html';
             break;
